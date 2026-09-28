@@ -1,76 +1,113 @@
 # pdfcn skill evals
 
-Prompts from issue #15 with the behaviour a run of the skill should show. Run each in a fresh
-agent session inside the pdfcn repo (prompts 3 to 5 also work from a consumer app) and compare
-against the expected outcome.
+Two sets: **task evals** (does the skill lead to correct work?) and **trigger evals** (does the
+description fire when it should, and only then?). Run each task prompt in a fresh agent session
+inside the pdfcn repo, then check its assertions; an eval passes when every assertion holds.
 
-## 1. Component
+## Task evals
+
+### 1. Component
 
 > Create a new PDF component for a receipt header using the Takumi base
 
-Expected: the agent reads `references/components.md`, checks existing components first, and
-creates `registry/bases/takumi/components/receipt-header/receipt-header.tsx` from the template
-(theme via `usePdfcnTheme` / `useSafeMemo`, `StyleSheet` from the Takumi primitives, JSDoc
-`Props - ...` line, sorted style keys). It mirrors the component under `bases/forme` with the
-Forme casts, adds `registry.json` entries with `@pdfcn/<base>/utils`, examples registered in
-`examples/__index__.ts`, docs MDX and `meta.json` for both bases, then runs `pnpm fix`,
-`pnpm check`, `pnpm typecheck`, `pnpm registry:build`, and the render check.
+- [ ] Files exist under both `registry/bases/takumi/components/receipt-header/` and
+      `registry/bases/forme/components/receipt-header/` (parity, even though the prompt names one
+      base).
+- [ ] The Takumi file follows the `components.md` template: `usePdfcnTheme` + `useSafeMemo`, a
+      `create…Styles(theme)` factory, a JSDoc `Props - ...` line; the Forme file adds the casts
+      listed under "Forme differences".
+- [ ] `scripts/check-registration.sh receipt-header` ends with `all registration sites ok`.
+- [ ] `pnpm check` prints `Found 0 warnings and 0 errors.` and `pnpm typecheck` succeeds.
+- [ ] `scripts/render-check.sh receipt-header` exits 0.
 
-Last run: the template from `components.md` was written to both bases unmodified (plus the
-listed Forme changes), was already formatter-clean, passed `pnpm check` and `pnpm typecheck`, built
-with a `registry.json` entry shaped as in `registry.md`, and rendered through `/api/pdf/takumi`
-and `/api/pdf/forme`.
+Last run: the `components.md` template, written unmodified to both bases (plus the listed Forme
+changes), was already formatter-clean, passed check and typecheck, built through a `registry.json`
+entry shaped as in `registry.md`, and rendered on both bases.
 
-## 2. Block
+### 2. Block
 
 > Scaffold an invoice block with table and total sections
 
-Expected: the agent reads `references/blocks.md`, looks at the existing `invoice-*` blocks, and
-creates `<name>.tsx` and `<name>.types.ts` for both bases from the skeleton (sample data,
-`<Name>Content` as the provider's direct child, `<Name>Document` accepting flat props and `data`).
-It uses `Table variant="grid" zebraStripe` and a `KeyValue` totals column in the monochrome
-style, applies each base's page scaffold from `rendering-bases.md`, completes the block
-registration checklist (`registry.json`, examples, `__index__.ts`, `preview-config.tsx` and
-`pdf-tool.tsx` `BLOCK_NAMES`, docs and `meta.json`), and verifies with the render check.
+- [ ] The agent inspects existing `invoice-*` blocks before writing.
+- [ ] `<name>.tsx` and `<name>.types.ts` exist for both bases; the export is `<Name>Document`,
+      renders with no props, and accepts flat props and `data`.
+- [ ] The document uses `Table variant="grid" zebraStripe` and a `KeyValue` totals column; the
+      title has no `titleColor` and the accent appears on at most one detail.
+- [ ] `scripts/check-registration.sh <name>` ends with `all registration sites ok` (this covers
+      `preview-config.tsx` and `pdf-tool.tsx` `BLOCK_NAMES`).
+- [ ] `scripts/render-check.sh <name>` exits 0 and reports the intended page count.
 
-Last run: a block written only from the skeleton, the page scaffolds, and the layout rules passed
+Last run: a block written only from the skeleton, page scaffolds, and layout rules passed
 `pnpm check` and `pnpm typecheck` on the first attempt and rendered as one clean A4 page on both
 bases.
 
-## 3. Registry
+### 3. Registry
 
 > How do I add a new component to the pdfcn registry?
 
-Expected: the answer comes from `references/registry.md` and `components.md`: a `registry:ui`
-entry named `<base>/<name>` in `apps/web/registry.json` for Takumi and Forme, with
-`registry:component` files targeting `components/pdf/<name>/<file>`, the base's npm
-`dependencies`, and `registryDependencies` starting with `@pdfcn/<base>/utils`. Then
-`pnpm registry:build`, committing `public/r/<base>/<name>.json` and `public/r/registry.json` and
-restoring unrelated churn, plus the example and docs registration.
+- [ ] The answer names a `registry:ui` entry `<base>/<name>` for **both** bases, with
+      `registry:component` files targeting `components/pdf/<name>/<file>`.
+- [ ] It lists the base's npm `dependencies` and `registryDependencies` starting with
+      `@pdfcn/<base>/utils`.
+- [ ] It includes `pnpm registry:build`, committing only the item's JSON plus
+      `public/r/registry.json` (via `restore-registry-churn.sh`), and `check-registration.sh`.
+- [ ] It mentions the example, `__index__.ts`, and docs registration.
 
-Last run: the churn-restore command from `registry.md` reduced 75 changed files in `public/r` to
-the item's two JSON files and the index.
+Last run: `restore-registry-churn.sh` reduced 72 rebuilt `public/r` files to the item's JSON and
+the index, and `check-registration.sh`, run on all 45 existing items, flagged only real
+registration problems on `main`.
 
-## 4. Rendering bases
+### 4. Rendering bases
 
 > What's the difference between Takumi and Forme rendering bases?
 
-Expected: the answer comes from `references/rendering-bases.md`: different npm packages and
-engines behind the same pdfcn API. Takumi pages are styled divs sized by render options, so blocks
-set `minHeight: 841`, page padding, and a sticky footer inside the page; Forme uses
-`Page size` and `margin` with the footer first. `KeepTogether` maps to `breakInside: "avoid"` on
-Takumi and `wrap={false}` on Forme, and `Section noWrap` only works on Forme. Forme needs style
-casts in components. It shows how each base renders to bytes and names pdfme (#13) and Unlayer
-Elements (#14) as proposals.
+- [ ] Names the npm packages of each base and states that the pdfcn API is the same.
+- [ ] Explains page setup: Takumi pages sized by render options with blocks padding themselves
+      (`minHeight: 841`); Forme `Page size` + `margin` with the footer first.
+- [ ] States that `Section noWrap` does nothing on Takumi and `KeepTogether` works on both.
+- [ ] Shows how each base renders to bytes, and names pdfme (#13) and Unlayer Elements (#14) as
+      proposals.
 
-## 5. Local setup
+### 5. Local setup
 
 > Help me set up the pdfcn project locally
 
-Expected: the agent follows `references/commands.md`: Node `>=20.9.0` and pnpm `10.28.2`, clone
-(a fork for contributors), `pnpm install` (installs the lefthook hook and generates fumadocs
-sources), `pnpm dev` on port 3000, a check that `/docs` and `/api/pdf/takumi?name=invoice-classic`
-respond, and the purpose of `check`, `fix`, `typecheck`, and `registry:build`.
+- [ ] Takes Node and pnpm versions from `package.json` rather than guessing them.
+- [ ] Runs `pnpm install` then `pnpm dev`, and verifies `/docs` and
+      `/api/pdf/takumi?name=invoice-classic` respond.
+- [ ] Explains `check`, `fix`, `typecheck`, and `registry:build`, and when to use each.
 
-Last run: both URLs returned 200 on a fresh `next dev`, and a docs page added while the server was
-running returned 404 until restart, as the troubleshooting table states.
+Last run: both setup URLs returned 200 on a fresh `next dev`; a docs page added while the server
+was running returned 404 until restart, as `SKILL.md` warns.
+
+### 6. Theme
+
+> Add a "coastal" theme preset with a teal accent
+
+- [ ] Creates `registry/themes/coastal.ts` exporting `coastalTheme` with hex colours and
+      `defaultPrimitives`.
+- [ ] Registers it in `registry/themes.ts` (`themePresets`), adds a `theme-coastal` item to
+      `registry.json`, and a docs page plus `content/docs/themes/meta.json` entry.
+- [ ] Commits `public/r/theme-coastal.json` after `pnpm registry:build`.
+
+## Trigger evals
+
+The description should fire for the first list and stay quiet for the second.
+
+Should trigger:
+
+1. "Add a packing slip block to pdfcn"
+2. "The lesson plan PDF looks misaligned on Forme, can you fix it?"
+3. "npx shadcn add @pdfcn/takumi/invoice-minimal fails with unresolved imports"
+4. "Which is better for server-side PDFs, Takumi or Forme?"
+5. "Register my new badge variant in registry.json"
+6. "How do I contribute a component to pdfcn?"
+7. "Make a PDF template for event tickets" (inside the pdfcn repo)
+8. "Apply the elegant theme to my invoice"
+
+Should not trigger:
+
+1. "Generate a PDF with react-pdf in my Express app" (no pdfcn involved)
+2. "Add a shadcn/ui button to my Next.js app" (shadcn, but not pdfcn)
+3. "Merge these two PDF files with pdf-lib"
+4. "Fix the TypeScript error in my auth middleware"
