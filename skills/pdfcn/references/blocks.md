@@ -101,7 +101,9 @@ export const ReceiptDocument = ({
 - **Totals**: `KeyValue` with `divided` and a bold last row, right-aligned in a fixed-width `View`.
 - **Pages**: fit on one page when the sample allows. For longer documents, split into explicit
   `<Page>`s by meaning (for example plan on page 1, assessment on page 2), each with its own
-  footer, rather than letting a table or section break arbitrarily.
+  footer, rather than letting a table or section break arbitrarily. To keep a group together,
+  wrap it in `KeepTogether`: that works on both bases, while `Section noWrap` silently does
+  nothing on Takumi. Per-base pagination behaviour is in [rendering-bases.md](rendering-bases.md).
 
 ## Component cheat sheet
 
@@ -140,9 +142,60 @@ A block is done when every item below holds for **both** bases:
 - [ ] `apps/web/examples/preview-config.tsx`: the name added to `BLOCK_NAMES` (plus
       `COMPONENT_SIZES` for non-A4 documents).
 - [ ] `apps/web/components/web-mcp/pdf-tool.tsx`: the name added to `BLOCK_NAMES`.
-- [ ] Docs `apps/web/content/docs/blocks/<base>/<name>.mdx`, copied from a sibling block page
-      (preview, CLI/manual install tabs listing the block's `.tsx` and `.types.ts`, usage with the
-      issue's example, props table), and the name added to that folder's `meta.json`.
+- [ ] Docs `apps/web/content/docs/blocks/<base>/<name>.mdx` (skeleton below) and the name added
+      to that folder's `meta.json`.
 - [ ] `pnpm registry:build` output committed: `public/r/<base>/<name>.json` and
       `public/r/registry.json`.
-- [ ] Render check passed on both bases (see [commands.md](commands.md)).
+
+`scripts/check-registration.sh <name>` verifies every item above; `scripts/render-check.sh <name>`
+then covers the render.
+
+### Docs page skeleton
+
+Copy a sibling page such as `content/docs/blocks/<base>/lesson-plan.mdx`, replace its kebab-case,
+PascalCase, and title names (`lesson-plan`, `LessonPlan`, `Lesson Plan`), and check the result
+has these parts:
+
+````mdx
+---
+title: "Receipt"
+description: "One sentence on what the document is for."
+---
+
+<ComponentPreview base="takumi" name="receipt" hideCode />
+
+## Installation
+
+<CodeTabs>
+  {/* "cli" tab: npx shadcn@latest add @pdfcn/takumi/receipt
+    "manual" tab: npm install <base dependencies>, then one <ComponentSource> per file:
+    the block's .tsx and .types.ts, the theme provider, lib files, theme, and types,
+    copied from the sibling page */}
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { ReceiptDocument } from "@/components/pdf/receipt";
+```
+
+```tsx
+<ReceiptDocument
+  data={
+    {
+      /* the issue's example values */
+    }
+  }
+/>
+```
+
+## Props
+
+| Prop    | Type           | Description             |
+| ------- | -------------- | ----------------------- |
+| `data`  | `ReceiptProps` | Receipt content         |
+| `theme` | `PdfcnTheme`   | Optional theme override |
+````
+
+The Forme page is the same with `base="forme"`, `@pdfcn/forme/receipt`, the Forme dependencies,
+and `registry/bases/forme/...` sources.

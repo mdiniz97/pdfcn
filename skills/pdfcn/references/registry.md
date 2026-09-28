@@ -66,14 +66,18 @@ pnpm registry:build     # from the repo root; runs `shadcn build` in apps/web
   committed, and CI runs it again as part of `pnpm build`.
 - Run it after the last source edit: the JSON inlines file contents, so an edit made after the
   build leaves the published item stale.
-- It rewrites every JSON in `public/r/`. Files built on another machine can differ only in line
-  endings, so `git status` may list dozens of unrelated files. Keep yours and restore the rest:
+- It rewrites every JSON in `public/r/`. Files built on another machine differ in line endings,
+  and some committed JSON lags behind its source, so `git status` lists dozens of files your
+  change never touched. Committing them would mix unrelated updates into your PR. Keep yours and
+  restore the rest with this skill's script:
 
 ```bash
-git diff --name-only -- apps/web/public/r \
-  | grep -v -e '/receipt.json$' -e 'public/r/registry.json$' \
-  | xargs git checkout --
+scripts/restore-registry-churn.sh receipt     # keeps public/r/*/receipt.json and public/r/registry.json
 ```
+
+- `scripts/check-registration.sh <name>` then confirms the entry: file paths, every source file
+  listed, `registryDependencies` equal to the components the files import, and generated JSON
+  that matches the current source.
 
 ## Consumer use
 

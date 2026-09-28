@@ -159,6 +159,9 @@ A component is done when every item below holds for **both** bases:
 - [ ] `pnpm registry:build` output committed: `public/r/<base>/<name>.json` and
       `public/r/registry.json`.
 
+`scripts/check-registration.sh <name>` verifies every item above; `scripts/render-check.sh <name>`
+then covers the render.
+
 ### Example file
 
 ```tsx

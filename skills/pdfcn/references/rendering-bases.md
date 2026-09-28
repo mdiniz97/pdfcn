@@ -7,17 +7,16 @@ namespace (`@pdfcn/takumi/...` or `@pdfcn/forme/...`). The list of bases lives i
 
 ## At a glance
 
-|                               | Takumi                                                                           | Forme                                                                                                                                                                                                                |
-| ----------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| npm dependencies              | `takumi-pdf`, `@takumi-rs/helpers`                                               | `@formepdf/react`, `@formepdf/core`                                                                                                                                                                                  |
-| Engine                        | JSX laid out as paged HTML/CSS in Takumi's WASM renderer, selectable text        | React PDF primitives laid out by Forme's WASM engine, browser and server                                                                                                                                             |
-| Primitives in components      | `@/registry/bases/takumi/lib/pdf-primitives` (div-based `View`, `Text`, …)       | `@/registry/bases/forme/lib/pdf-primitives` (wraps `@formepdf/react`)                                                                                                                                                |
-| `Document` / `Page` in blocks | `@/registry/bases/takumi/lib/pdf-primitives`                                     | `@formepdf/react`                                                                                                                                                                                                    |
-| Page size and margins         | Set by render options; `Page size` is ignored, so blocks pad the page themselves | `<Page size="A4" margin={{ top, right, bottom, left }}>`                                                                                                                                                             |
-| Keep a group on one page      | `KeepTogether` or `View wrap={false}` → CSS `breakInside: "avoid"`               | `KeepTogether` or `View wrap={false}`; `Section noWrap` also works                                                                                                                                                   |
-| `Section noWrap`              | Declared but not implemented                                                     | Implemented (`wrap={false}`)                                                                                                                                                                                         |
-| Style typing                  | `Style = Record<string, unknown>`; no casts needed                               | Strict types: components cast `StyleSheet.create({...} as Record<string, Style>)`; style arrays and a block's page `View` style take `as never`; blocks using `StyleSheet` from `@formepdf/react` need no other cast |
-| Units                         | Points; primitives convert lengths to CSS px (`pointToCssPixel`, 96/72)          | Points                                                                                                                                                                                                               |
+|                               | Takumi                                                                                                            | Forme                                                                                                                                                                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| npm dependencies              | `takumi-pdf`, `@takumi-rs/helpers`                                                                                | `@formepdf/react`, `@formepdf/core`                                                                                                                                                                                  |
+| Engine                        | JSX laid out as paged HTML/CSS in Takumi's WASM renderer, selectable text                                         | React PDF primitives laid out by Forme's WASM engine, browser and server                                                                                                                                             |
+| Primitives in components      | `@/registry/bases/takumi/lib/pdf-primitives` (div-based `View`, `Text`, …)                                        | `@/registry/bases/forme/lib/pdf-primitives` (wraps `@formepdf/react`)                                                                                                                                                |
+| `Document` / `Page` in blocks | `@/registry/bases/takumi/lib/pdf-primitives`                                                                      | `@formepdf/react`                                                                                                                                                                                                    |
+| Page size and margins         | Set by render options; `Page size` is ignored, so blocks pad the page themselves                                  | `<Page size="A4" margin={{ top, right, bottom, left }}>`                                                                                                                                                             |
+| Keep a group on one page      | `KeepTogether` or `View wrap={false}` → CSS `breakInside: "avoid"`; `Section noWrap` is declared but does nothing | `KeepTogether`, `View wrap={false}`, or `Section noWrap`                                                                                                                                                             |
+| Style typing                  | `Style = Record<string, unknown>`; no casts needed                                                                | Strict types: components cast `StyleSheet.create({...} as Record<string, Style>)`; style arrays and a block's page `View` style take `as never`; blocks using `StyleSheet` from `@formepdf/react` need no other cast |
+| Units                         | Points; primitives convert lengths to CSS px (`pointToCssPixel`, 96/72)                                           | Points                                                                                                                                                                                                               |
 
 ## Takumi
 
@@ -100,6 +99,34 @@ const bytes = await renderPdf(JSON.stringify(serialize(<InvoiceDocument />)));
 ```
 
 Serialize in the same module that builds the tree so Forme sees one copy of its primitives.
+
+## Serving a PDF from a Next.js route (consumer)
+
+Render on the server and return the bytes with a PDF content type. Takumi shown; for Forme,
+swap the render line for the `serialize` + `renderPdf` pair above.
+
+```tsx
+// app/api/invoice/route.tsx
+import { render } from "takumi-pdf/next";
+
+import { InvoiceClassicDocument } from "@/components/pdf/blocks/invoice-classic/invoice-classic";
+
+export const GET = async () => {
+  const pdf = await render(<InvoiceClassicDocument />, {
+    margin: 0,
+    size: "a4",
+  });
+  return new Response(Buffer.from(pdf), {
+    headers: {
+      "Content-Disposition": 'inline; filename="invoice.pdf"',
+      "Content-Type": "application/pdf",
+    },
+  });
+};
+```
+
+Blocks pad their own pages, so Takumi's `margin` is `0` for blocks; give plain component trees a
+margin (the docs preview uses 40pt).
 
 ## Choosing a base (consumer question)
 

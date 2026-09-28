@@ -6,22 +6,22 @@ but no packages exist today.
 
 ## Repository root
 
-| Path                                  | Role                                                                                                        |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `package.json`                        | Root scripts that fan out through Turbo to `apps/web` (see [commands.md](commands.md)); pins `pnpm@10.28.2` |
-| `turbo.json`                          | Task graph: `build`, `typecheck`, `dev`, `start`, `registry:build` (uncached)                               |
-| `lefthook.yml`                        | Pre-commit hook: `pnpm fix {staged_files}` on `js/jsx/ts/tsx/json/jsonc/css`, re-stages fixes               |
-| `oxlint.config.ts`, `oxfmt.config.ts` | Ultracite lint and format config; both ignore `.agents/**`, `.cursor/**`, `apps/web/public/r/**`            |
-| `skills/`                             | Skills this repo publishes (this skill lives in `skills/pdfcn/`)                                            |
-| `.agents/skills/`, `skills-lock.json` | Third-party skills installed for contributors (for example `launch-shadcn-registry`)                        |
-| `.github/`                            | CI (`workflows/ci.yml`), DCO config, PR template, issue templates                                           |
-| `CONTRIBUTING.md`                     | Human contribution guide; [contributing.md](contributing.md) is the agent-facing version                    |
+| Path                                  | Role                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                        | Root scripts that fan out through Turbo to `apps/web` (see [commands.md](commands.md)); pins pnpm in `packageManager` |
+| `turbo.json`                          | Task graph: `build`, `typecheck`, `dev`, `start`, `registry:build` (uncached)                                         |
+| `lefthook.yml`                        | Pre-commit hook: `pnpm fix {staged_files}` on `js/jsx/ts/tsx/json/jsonc/css`, re-stages fixes                         |
+| `oxlint.config.ts`, `oxfmt.config.ts` | Ultracite lint and format config; both ignore `.agents/**`, `.cursor/**`, `apps/web/public/r/**`                      |
+| `skills/`                             | Skills this repo publishes; this one is `skills/pdfcn/` (`SKILL.md`, `references/`, `scripts/`, `evals/`)             |
+| `.agents/skills/`, `skills-lock.json` | Third-party skills installed for contributors (for example `launch-shadcn-registry`)                                  |
+| `.github/`                            | CI (`workflows/ci.yml`), DCO config, PR template, issue templates                                                     |
+| `CONTRIBUTING.md`                     | Human contribution guide; [contributing.md](contributing.md) is the agent-facing version                              |
 
 ## `apps/web`
 
-A Next.js 16 App Router app. Docs are MDX rendered by fumadocs (`source.config.ts`,
-`mdx-components.tsx`). Internationalisation with Intlayer is proposed in PR #8 and is not on
-`main`.
+A Next.js App Router app (version in `apps/web/package.json`). Docs are MDX rendered by fumadocs (`source.config.ts`,
+`mdx-components.tsx`). Internationalisation with Intlayer is proposed in an open PR; check
+`apps/web/package.json` for `intlayer` before assuming it exists.
 
 ```
 apps/web/

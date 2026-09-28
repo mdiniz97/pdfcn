@@ -36,12 +36,9 @@ base switcher links each page to its twin, so a single-base item leaves a 404 in
 
 ## 4. Verify
 
-```bash
-pnpm fix && pnpm check && pnpm typecheck && pnpm registry:build
-```
-
-Then run the render check in [commands.md](commands.md) for both bases and restore unrelated
-`public/r` churn ([registry.md](registry.md), "Building").
+Complete steps 3 to 6 of the change loop in `SKILL.md` (static checks, registry rebuild and
+churn restore, `check-registration.sh`, `render-check.sh`), and keep their output: it becomes the
+PR's Validation section.
 
 ## 5. Commit
 
@@ -59,13 +56,12 @@ Split the work into commits that each review on their own, in dependency order. 
 2. `feat(registry): add <name> block for forme`: the Forme source folder.
 3. `feat(registry): register <name> and add previews`: `registry.json`, examples,
    `examples/__index__.ts`, `preview-config.tsx`, `pdf-tool.tsx`, both docs `meta.json`, and the
-   generated `public/r` files. This commit contains `.ts`/`.tsx` files, so the pre-commit hook
-   accepts the JSON in it (a JSON-only commit fails the hook).
+   generated `public/r` files. Grouping the JSON with these `.ts`/`.tsx` files is what lets the
+   pre-commit hook pass.
 4. `docs: add <name> pages`: the two `.mdx` files (the hook skips `.mdx`).
 
 Other prefixes in use: `fix(<scope>): …`, `style(registry): …` (visual changes with no API
-change), `docs: …`. Keep the message about what changed and why, and keep tool or assistant
-attributions out of commits and PR text.
+change), `docs: …`. Keep tool or assistant attributions out of commits and PR text.
 
 ## 6. Open the pull request
 
