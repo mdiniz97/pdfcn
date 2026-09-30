@@ -49,13 +49,16 @@ bases.
       `registry:component` files targeting `components/pdf/<name>/<file>`.
 - [ ] It lists the base's npm `dependencies` and `registryDependencies` starting with
       `@pdfcn/<base>/utils`.
-- [ ] It includes `pnpm registry:build`, committing only the item's JSON plus
-      `public/r/registry.json` (via `restore-registry-churn.sh`), and `check-registration.sh`.
+- [ ] It includes `pnpm registry:build`, says the build fails when an imported component is
+      missing from `registryDependencies`, and commits only the item's JSON plus
+      `public/r/registry.json` (via `restore-registry-churn.sh`), then `check-registration.sh`.
 - [ ] It mentions the example, `__index__.ts`, and docs registration.
 
-Last run: `restore-registry-churn.sh` reduced 72 rebuilt `public/r` files to the item's JSON and
-the index, and `check-registration.sh`, run on all 45 existing items, flagged only real
-registration problems on `main`.
+Last run: on a checkout whose committed JSON lagged its source, `restore-registry-churn.sh`
+reduced 72 rebuilt `public/r` files to the item's JSON and the index. `check-registration.sh`,
+run on all 45 existing items of the current `main`, flagged only real registration gaps, and
+removing `page-number` from a report's `registryDependencies` made `pnpm registry:build` fail
+with the documented `imports missing` message.
 
 ### 4. Rendering bases
 

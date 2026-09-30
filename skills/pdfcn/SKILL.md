@@ -39,7 +39,7 @@ switcher link one page to the other, so treat a single-base change as unfinished
 | Create or change a component (text, table, badge, …)                    | [references/components.md](references/components.md)           |
 | Create or change a block (invoice, report, any full document)           | [references/blocks.md](references/blocks.md)                   |
 | Create a theme preset, or apply one in an app                           | [references/themes.md](references/themes.md)                   |
-| Registry entries, `shadcn build`, installing with the CLI               | [references/registry.md](references/registry.md)               |
+| Registry entries, `pnpm registry:build`, installing with the CLI        | [references/registry.md](references/registry.md)               |
 | Takumi vs Forme behaviour, page setup, rendering to bytes, future bases | [references/rendering-bases.md](references/rendering-bases.md) |
 | Where things live in the monorepo                                       | [references/architecture.md](references/architecture.md)       |
 | Local setup, scripts, dev server, error messages                        | [references/commands.md](references/commands.md)               |

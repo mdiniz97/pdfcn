@@ -20,14 +20,14 @@ Setup is done when `http://localhost:3000/docs` loads and
 
 ## Scripts (run from the repo root)
 
-| Command               | Use it to                                                         |
-| --------------------- | ----------------------------------------------------------------- |
-| `pnpm dev`            | Serve docs, previews, and `/api/pdf/*` on port 3000               |
-| `pnpm build`          | Production build (registry first); CI runs it before `typecheck`  |
-| `pnpm typecheck`      | Type errors; success prints `Tasks: 1 successful, 1 total`        |
-| `pnpm check`          | What CI enforces; success prints `Found 0 warnings and 0 errors.` |
-| `pnpm fix`            | Auto-fix lint and formatting, including Markdown and MDX tables   |
-| `pnpm registry:build` | Regenerate `apps/web/public/r/` after any registry source change  |
+| Command               | Use it to                                                          |
+| --------------------- | ------------------------------------------------------------------ |
+| `pnpm dev`            | Serve docs, previews, and `/api/pdf/*` on port 3000                |
+| `pnpm build`          | Production build (registry first); CI runs it before `typecheck`   |
+| `pnpm typecheck`      | Type errors; success prints `Tasks: 1 successful, 1 total`         |
+| `pnpm check`          | What CI enforces; success prints `Found 0 warnings and 0 errors.`  |
+| `pnpm fix`            | Auto-fix lint and formatting, including Markdown and MDX tables    |
+| `pnpm registry:build` | Regenerate `apps/web/public/r/` and validate every install closure |
 
 The pre-commit hook runs `pnpm fix` on staged `js/jsx/ts/tsx/json/jsonc/css` files. It does not
 touch `.md`/`.mdx`, but `pnpm check` does, so run `pnpm fix` after editing docs.
@@ -64,13 +64,15 @@ script catches overflow, and your eyes catch misaligned columns, clipped text, a
 Problems that show no error (stale previews, generated agent files) are in `SKILL.md`,
 "Silent gotchas".
 
-| Error or symptom                                               | Cause and fix                                                                                                        |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `Another next dev server is already running`                   | Next allows one dev server per app directory. Use the running one (its URL is printed), or stop the printed PID.     |
-| `Attempted to call the default export of … from the server`    | The example has `"use client"`; examples are server-rendered (see "Example file" in [components.md](components.md)). |
-| `Unknown demo: <name>` (404 from `/api/pdf`)                   | The example is missing from `demos.<base>` in `examples/__index__.ts`.                                               |
-| `<Component> is not defined` (500 from `/api/pdf`)             | A JSX element is used without its import.                                                                            |
-| `Type 'string[]' is not assignable to type 'ListItem[]'`       | `PdfList` wants `items={values.map((text) => ({ text }))}`.                                                          |
-| Lint: `sort-keys`, `no-negated-condition`, formatting          | Run `pnpm fix`; sort remaining keys by hand and flip `a !== b ? x : y` to `a === b ? y : x`.                         |
-| `shadcn build` fails with `Unexpected token` or `Expected ','` | `registry.json` is invalid JSON; validate with `python3 -m json.tool apps/web/registry.json`.                        |
-| Commit fails in the hook with "No files found to lint"         | Every hook-matched staged file is JSON, which oxlint does not lint; commit it together with a `.ts`/`.tsx` change.   |
+| Error or symptom                                                 | Cause and fix                                                                                                              |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `Another next dev server is already running`                     | Next allows one dev server per app directory. Use the running one (its URL is printed), or stop the printed PID.           |
+| `Attempted to call the default export of … from the server`      | The example has `"use client"`; examples are server-rendered (see "Example file" in [components.md](components.md)).       |
+| `Unknown demo: <name>` (404 from `/api/pdf`)                     | The example is missing from `demos.<base>` in `examples/__index__.ts`.                                                     |
+| `<Component> is not defined` (500 from `/api/pdf`)               | A JSX element is used without its import.                                                                                  |
+| `Type 'string[]' is not assignable to type 'ListItem[]'`         | `PdfList` wants `items={values.map((text) => ({ text }))}`.                                                                |
+| Lint: `sort-keys`, `no-negated-condition`, formatting            | Run `pnpm fix`; sort remaining keys by hand and flip `a !== b ? x : y` to `a === b ? y : x`.                               |
+| `registry:build` fails with `Unexpected token` or `Expected ','` | `registry.json` is invalid JSON; validate with `python3 -m json.tool apps/web/registry.json`.                              |
+| `registry:build`: `<item>: <file> imports missing <path>`        | The item imports a pdfcn component missing from its `registryDependencies` (see "Building" in [registry.md](registry.md)). |
+| `registry:build`: `<item>: <file> requires undeclared package`   | Add the npm package to the item's `dependencies`.                                                                          |
+| Commit fails in the hook with "No files found to lint"           | Every hook-matched staged file is JSON, which oxlint does not lint; commit it together with a `.ts`/`.tsx` change.         |
