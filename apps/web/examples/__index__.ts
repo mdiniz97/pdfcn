@@ -43,6 +43,7 @@ import forme_signature from "@/examples/forme/signature";
 import forme_stack from "@/examples/forme/stack";
 import forme_table from "@/examples/forme/table";
 import forme_text from "@/examples/forme/text";
+import forme_totals from "@/examples/forme/totals";
 import forme_watermark from "@/examples/forme/watermark";
 import forme_work_order from "@/examples/forme/work-order";
 import takumi_alert from "@/examples/takumi/alert";
@@ -88,6 +89,7 @@ import takumi_signature from "@/examples/takumi/signature";
 import takumi_stack from "@/examples/takumi/stack";
 import takumi_table from "@/examples/takumi/table";
 import takumi_text from "@/examples/takumi/text";
+import takumi_totals from "@/examples/takumi/totals";
 import takumi_watermark from "@/examples/takumi/watermark";
 import takumi_work_order from "@/examples/takumi/work-order";
 import type { BaseName } from "@/registry/bases";
@@ -139,6 +141,7 @@ export const demos: Record<BaseName, DemoMap> = {
     stack: forme_stack,
     table: forme_table,
     text: forme_text,
+    totals: forme_totals,
     watermark: forme_watermark,
     "work-order": forme_work_order,
   },
@@ -186,6 +189,7 @@ export const demos: Record<BaseName, DemoMap> = {
     stack: takumi_stack,
     table: takumi_table,
     text: takumi_text,
+    totals: takumi_totals,
     watermark: takumi_watermark,
     "work-order": takumi_work_order,
   },
