@@ -19,7 +19,12 @@ const path = require("node:path");
 const [web, name] = process.argv.slice(2);
 const exists = (p) => fs.existsSync(path.join(web, p));
 const read = (p) => fs.readFileSync(path.join(web, p), "utf8");
-const normalize = (text) => text.replace(/\r\n/g, "\n");
+// The registry build rewrites `@/registry/...` import paths to install targets, so compare
+// sources with every `@/` module specifier masked, and with line endings normalised.
+const normalize = (text) =>
+  text
+    .replace(/\r\n/g, "\n")
+    .replace(/((?:from|import)\s*)(["'])@\/[^"']+\2/g, '$1"@/"');
 const bases = ["takumi", "forme"];
 const kind = bases.some((b) => exists(`registry/bases/${b}/blocks/${name}`))
   ? "blocks"
