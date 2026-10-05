@@ -122,5 +122,18 @@ import { CertificateDocument } from "@/components/pdf/certificate";
 />
 ```
 
+### Image watermark
+
+Pass `watermarkImageUrl` to draw a low-opacity image (an org seal or crest)
+behind the certificate content, and `watermarkOpacity` (0–1, default `0.08`)
+to control its strength.
+
+```tsx
+<CertificateDocument
+  watermarkImageUrl="/seal.png"
+  watermarkOpacity={0.1}
+/>
+```
+
 For a gift voucher instead of a formal award certificate, see
 [Gift Certificate](/docs/blocks/takumi/gift-certificate).
