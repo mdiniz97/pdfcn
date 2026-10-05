@@ -849,6 +849,33 @@
     },
     {
       "dependencies": ["takumi-pdf", "@takumi-rs/helpers"],
+      "description": "Receipt PDF block (takumi)",
+      "files": [
+        {
+          "path": "registry/bases/takumi/blocks/receipt/receipt.tsx",
+          "type": "registry:block",
+          "target": "components/pdf/blocks/receipt/receipt.tsx"
+        },
+        {
+          "path": "registry/bases/takumi/blocks/receipt/receipt.types.ts",
+          "type": "registry:block",
+          "target": "components/pdf/blocks/receipt/receipt.types.ts"
+        }
+      ],
+      "name": "takumi/receipt",
+      "registryDependencies": [
+        "@pdfcn/takumi/utils",
+        "@pdfcn/takumi/barcode",
+        "@pdfcn/takumi/pdf-image",
+        "@pdfcn/takumi/table",
+        "@pdfcn/takumi/text",
+        "@pdfcn/takumi/totals"
+      ],
+      "title": "Receipt",
+      "type": "registry:block"
+    },
+    {
+      "dependencies": ["takumi-pdf", "@takumi-rs/helpers"],
       "description": "Report Financial PDF block (takumi)",
       "files": [
         {
@@ -2468,6 +2495,33 @@
         "@pdfcn/forme/text"
       ],
       "title": "Lesson Plan",
+      "type": "registry:block"
+    },
+    {
+      "dependencies": ["@formepdf/react", "@formepdf/core"],
+      "description": "Receipt PDF block (forme)",
+      "files": [
+        {
+          "path": "registry/bases/forme/blocks/receipt/receipt.tsx",
+          "type": "registry:block",
+          "target": "components/pdf/blocks/receipt/receipt.tsx"
+        },
+        {
+          "path": "registry/bases/forme/blocks/receipt/receipt.types.ts",
+          "type": "registry:block",
+          "target": "components/pdf/blocks/receipt/receipt.types.ts"
+        }
+      ],
+      "name": "forme/receipt",
+      "registryDependencies": [
+        "@pdfcn/forme/utils",
+        "@pdfcn/forme/barcode",
+        "@pdfcn/forme/pdf-image",
+        "@pdfcn/forme/table",
+        "@pdfcn/forme/text",
+        "@pdfcn/forme/totals"
+      ],
+      "title": "Receipt",
       "type": "registry:block"
     }
   ],
