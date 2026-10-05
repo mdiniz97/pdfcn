@@ -154,10 +154,29 @@ const CertificateContent = ({ data }: { data: CertificateData }) => {
       marginTop: spacing[4],
       textAlign: "center",
     },
+    watermark: {
+      alignItems: "center",
+      bottom: 0,
+      justifyContent: "center",
+      left: 0,
+      position: "absolute",
+      right: 0,
+      top: 0,
+    },
   });
 
   const content = (
     <>
+      {data.watermarkImageUrl ? (
+        <View style={styles.watermark}>
+          <PdfImage
+            fit="contain"
+            height={240}
+            src={data.watermarkImageUrl}
+            style={{ opacity: data.watermarkOpacity ?? 0.08 }}
+          />
+        </View>
+      ) : null}
       {data.logoUrl ? (
         <PdfImage src={data.logoUrl} style={styles.logo} />
       ) : null}

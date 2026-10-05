@@ -23,6 +23,13 @@ export interface CertificateData {
   message?: string;
   signers: CertificateSigner[];
   logoUrl?: string;
+  /** Image drawn low-opacity behind the content (org seal, crest). */
+  watermarkImageUrl?: string;
+  /**
+   * Opacity of the watermark image, 0-1.
+   * @default 0.08
+   */
+  watermarkOpacity?: number;
   /**
    * Draw the double outer frame around the page.
    * @default true
