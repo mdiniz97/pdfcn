@@ -10,10 +10,7 @@ const packageManagerAtom = atomWithStorage<PackageManager>(
   "pnpm"
 );
 
-const commandTabAtom = atomWithStorage<CommandTab>(
-  "command-tab",
-  "pnpm"
-);
+const commandTabAtom = atomWithStorage<CommandTab>("command-tab", "pnpm");
 
 export const usePackageManager = () => useAtom(packageManagerAtom);
 

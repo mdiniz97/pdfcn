@@ -137,10 +137,7 @@ export const CodeBlockCommand = ({
           ))}
           {isShadcnCommand && (
             <>
-              <TabsContent
-                className="mt-0 px-4 py-3.5"
-                value="shadcn"
-              >
+              <TabsContent className="mt-0 px-4 py-3.5" value="shadcn">
                 <pre>
                   <code
                     data-slot="code-block"
