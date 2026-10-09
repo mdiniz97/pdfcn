@@ -1,4 +1,4 @@
-import { FileIcon, TerminalSquareIcon } from "lucide-react";
+import { FileIcon, TerminalSquareIcon, TextIcon } from "lucide-react";
 
 import type { PackageManager } from "@/hooks/use-package-manager";
 import { cn } from "@/lib/utils";
@@ -550,6 +550,9 @@ export const getIconForCommandTab = (tab: string) => {
     }
     case "shadcn": {
       return <ShadcnIcon />;
+    }
+    case "prompt": {
+      return <TextIcon className="size-4" />;
     }
     default: {
       return <TerminalSquareIcon />;

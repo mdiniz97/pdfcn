@@ -1,11 +1,18 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { CopyButton } from "@/components/copy-button";
 import { getIconForPackageManager } from "@/components/icons";
 import { RegistryAddButton } from "@/components/registry-add-button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TextFlip } from "@/components/ui/text-flip";
 import { SITE } from "@/constants/site";
@@ -34,6 +41,13 @@ export const CommandBox = ({ className }: { className?: string }) => {
 
   const currentItemRef = useRef(registryItemNames[0]);
 
+  const handlePackageManagerChange = useCallback(
+    (value: string) => {
+      setPackageManager(value as PackageManager);
+    },
+    [setPackageManager]
+  );
+
   return (
     <div
       className={cn(
@@ -43,13 +57,11 @@ export const CommandBox = ({ className }: { className?: string }) => {
     >
       <Tabs
         className="gap-0"
-        onValueChange={(value: string) => {
-          setPackageManager(value as PackageManager);
-        }}
+        onValueChange={handlePackageManagerChange}
         value={packageManager}
       >
         <div className="border-border/50 flex items-center gap-2 border-b px-3 py-1">
-          <TabsList className="rounded-none bg-transparent p-0 [&_svg]:me-2 [&_svg]:size-4 [&_svg]:text-muted-foreground">
+          <TabsList className="hidden rounded-none bg-transparent p-0 md:inline-flex [&_svg]:me-2 [&_svg]:size-4 [&_svg]:text-muted-foreground">
             {getIconForPackageManager(packageManager)}
 
             {Object.entries(pmCommands).map(([key]) => (
@@ -63,6 +75,28 @@ export const CommandBox = ({ className }: { className?: string }) => {
               </TabsTrigger>
             ))}
           </TabsList>
+          <div className="flex items-center gap-2 md:hidden">
+            {getIconForPackageManager(packageManager)}
+            <Select
+              onValueChange={handlePackageManagerChange}
+              value={packageManager}
+            >
+              <SelectTrigger
+                aria-label="Package manager"
+                size="sm"
+                className="font-sans bg-background px-2.5 my-0.5 shadow-none dark:bg-background dark:hover:bg-background"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(pmCommands).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {key}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <pre className="-translate-y-px px-4 py-3.5">
           <code
