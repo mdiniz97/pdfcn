@@ -35,5 +35,9 @@ export const createCodeStyles = (t: PdfcnTheme) => {
       marginBottom: spacing[2],
       paddingBottom: spacing[1],
     },
+    tokenComment: { color: t.colors.mutedForeground },
+    tokenKeyword: { color: t.colors.accent },
+    tokenNumber: { color: t.colors.warning },
+    tokenString: { color: t.colors.success },
   });
 };

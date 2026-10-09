@@ -29,11 +29,15 @@ export const createCodeStyles = (t: PdfcnTheme) => {
       borderBottomStyle: "solid",
       borderBottomWidth: 0.5,
       color: t.colors.mutedForeground,
-      fontFamily: "Courier",
+      fontFamily: t.typography.body.fontFamily,
       fontSize: typography.xs,
       letterSpacing: 0.5,
       marginBottom: spacing[2],
       paddingBottom: spacing[1],
     },
+    tokenComment: { color: t.colors.mutedForeground },
+    tokenKeyword: { color: t.colors.accent },
+    tokenNumber: { color: t.colors.warning },
+    tokenString: { color: t.colors.success },
   });
 };

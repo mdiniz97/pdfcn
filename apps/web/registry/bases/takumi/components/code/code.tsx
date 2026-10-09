@@ -11,10 +11,13 @@ import { resolveColor } from "@/registry/bases/takumi/lib/resolve-color";
 
 import { createCodeStyles } from "./code.styles";
 import type { CodeProps } from "./code.types";
+import { detectLanguage, tokenizeLine } from "./code.utils";
+import type { CodeTokenType } from "./code.utils";
 
 export const Code = ({
   code,
   title,
+  language,
   maxLines,
   accentColor,
   style,
@@ -38,12 +41,31 @@ export const Code = ({
     containerStyles.push(style);
   }
 
+  const lang = language ?? detectLanguage(title);
+  const tokenStyle: Record<CodeTokenType, Style | undefined> = {
+    comment: styles.tokenComment,
+    keyword: styles.tokenKeyword,
+    number: styles.tokenNumber,
+    plain: undefined,
+    string: styles.tokenString,
+  };
+
   return (
     <View style={containerStyles}>
       {title ? <PDFText style={styles.title}>{title}</PDFText> : null}
       {lines.map((line, i) => (
         <PDFText key={`${i}-${line.length}`} style={styles.code}>
-          {line.length > 0 ? line : " "}
+          {line.length === 0
+            ? " "
+            : tokenizeLine(line, lang).map((token, j) =>
+                token.type === "plain" ? (
+                  token.text
+                ) : (
+                  <PDFText key={`${i}-${j}`} style={tokenStyle[token.type]}>
+                    {token.text}
+                  </PDFText>
+                )
+              )}
         </PDFText>
       ))}
       {truncated ? (

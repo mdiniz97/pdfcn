@@ -8,6 +8,7 @@ const Demo = () => (
       <View>
         <Code
           code={"npx shadcn@latest add @pdfcn/forme/code"}
+          language="shell"
           title="Install"
         />
         <Code

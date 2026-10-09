@@ -4,7 +4,11 @@ import { Document, Page } from "@/registry/bases/takumi/lib/pdf-primitives";
 
 const DemoBody = () => (
   <>
-    <Code code={"npx shadcn@latest add @pdfcn/takumi/code"} title="Install" />
+    <Code
+      code={"npx shadcn@latest add @pdfcn/takumi/code"}
+      language="shell"
+      title="Install"
+    />
     <Code
       code={'const greeting = "Hello, pdfcn";\nconsole.log(greeting);'}
       title="hello.ts"

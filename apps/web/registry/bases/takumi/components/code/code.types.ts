@@ -1,8 +1,10 @@
 import type { Style } from "@/registry/bases/takumi/lib/pdf-primitives";
 
+import type { CodeLanguage } from "./code.utils";
+
 /**
  * Monospaced code snippet on a muted filled background with rounded corners.
- * Props - `code` | `title` | `maxLines` | `accentColor` | `renderingBase` | `style`
+ * Props - `code` | `title` | `language` | `maxLines` | `accentColor` | `renderingBase` | `style`
  * @see {@link CodeProps}
  */
 export interface CodeProps {
@@ -10,6 +12,11 @@ export interface CodeProps {
   code: string;
   /** Small label bar above the code (filename, language, or command). */
   title?: string;
+  /**
+   * Syntax highlighting language. When omitted, the language is inferred from
+   * a filename-like `title` (e.g. `"app.ts"`); plain text is used if unknown.
+   */
+  language?: CodeLanguage;
   /** Truncate the snippet after this many lines, adding an ellipsis line. */
   maxLines?: number;
   /**
